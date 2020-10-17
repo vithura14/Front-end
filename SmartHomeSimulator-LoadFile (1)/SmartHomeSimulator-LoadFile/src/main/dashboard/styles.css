@@ -1,0 +1,267 @@
+.window {
+  position:absolute;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+}
+
+#kitchenWindow1 {
+  left:130px;
+  top:2px;
+}
+
+#kitchenWindow2 {
+  left:180px;
+  top:2px;
+}
+
+#kitchenWindow3 {
+  left:48px;
+  top:50px;
+}
+
+#kitchenWindow4 {
+  left:48px;
+  top:100px;
+}
+
+#masterWindow1{
+  left:330px;
+  top:2px;
+}
+
+#masterWindow2{
+  left:350px;
+  top:2px;
+}
+
+#masterWindow3{
+  left:370px;
+  top:2px;
+}
+
+#bedroom1Window1{
+  left:350px;
+  top:310px;
+}
+
+#bedroom1Window2{
+  left:380px;
+  top:310px;
+}
+
+#bedroom2Window1{
+  left:450px;
+  top:310px;
+}
+
+#bedroom2Window2{
+  left:547px;
+  top:280px;
+}
+
+#livingRoomWindow1{
+  left:480px;
+  top:2px;
+}
+
+#livingRoomWindow2{
+  left:597px;
+  top:50px;
+}
+
+#livingRoomWindow3{
+  left:597px;
+  top:90px;
+}
+
+#garageWindow1{
+  left:185px;
+  top:400px;
+}
+
+#garageWindow2{
+  left:185px;
+  top:360px;
+}
+
+#garageWindow3{
+  left:220px;
+  top:435px;
+}
+
+#garageWindow4{
+  left:260px;
+  top:435px;
+}
+
+#laundryWindow1{
+  left:150px;
+  top:310px;
+}
+
+
+
+
+
+body {font-family: "Lato", sans-serif;}
+
+/*The tabs styling*/
+.tabLink {
+	background-color: #555;
+	color: white;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 14px 16px;
+	font-size: 17px;
+	width: 25%;
+}
+
+.tabLink:hover {
+	background-color: #777;
+}
+
+/* Style the tab content */
+.tabContent {
+	color: white;
+	display: none;
+	padding: 50px;
+}
+
+#SHS {background-image:url("backImg.jpg"); background-size: 1900px 400px; background-repeat: no-repeat;}
+#SHC {background-image:url("backImg.jpg"); background-size: 1900px 400px; background-repeat: no-repeat;}
+#SHP {background-image:url("backImg.jpg"); background-size: 1900px 400px; background-repeat: no-repeat;}
+#SHH {background-image:url("backImg.jpg"); background-size: 1900px 400px; background-repeat: no-repeat;}
+			
+			
+/*The option tag styling on the SHC tab*/
+.customSelect {
+	position: relative;
+	font-family: Arial;
+}
+
+.customSelect select {
+	display: none; /*hide original SELECT element:*/
+}
+
+.selectSelected {
+	background-color: DodgerBlue;
+}
+
+/*style the arrow inside the select element:*/
+.selectSelected:after {
+	position: absolute;
+	content: "";
+	top: 14px;
+	right: 10px;
+	width: 0;
+	height: 0;
+	border: 6px solid transparent;
+	border-color: #fff transparent transparent transparent;
+}
+
+/*point the arrow upwards when the select box is open (active):*/
+.selectSelected.select-arrow-active:after {
+	border-color: transparent transparent #fff transparent;
+	top: 7px;
+}
+
+/*style the items (options), including the selected item:*/
+.select-items div,.select-selected {
+	color: #ffffff;
+	padding: 8px 16px;
+	border: 1px solid transparent;
+	border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+	cursor: pointer;
+	user-select: none;
+}
+
+/*style items (options):*/
+.select-items {
+	position: absolute;
+	background-color: DodgerBlue;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 99;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+	display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+				
+/*The open and close styling*/
+.container {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position: absolute;
+	top: 0px;
+	left: 5px;
+	height: 25px;
+	width: 25px;
+	background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+	background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+	background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+	left: 9px;
+	top: 5px;
+	width: 5px;
+	height: 10px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+		

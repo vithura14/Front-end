@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="styles.css">
+		<title> Smart Home Simulator </title>
+	</head>
+	
+	<body>
+
+		<div id="SHS" class="tabContent">
+		  <h1>SHS</h1>
+		  <p>SHS Module.</p>
+		</div>
+
+
+
+		<div id="SHC" class="tabContent">
+			<p> SHC </p>
+			<div class="customSelect" style="width:200px;">
+				<select>
+					<option value="0">Select Item:</option>
+					<option value="1">Windows</option>
+					<option value="2">Lights</option>
+					<option value="3">Doors</option>
+				</select>
+			</div>
+			
+			<br />
+			<h2> Open/Close </h2> 
+			<label class="container">Backyard
+				<input type="checkbox" checked="checked">
+				<span class="checkmark"></span>
+			</label>
+			<label class="container">Garage
+				<input type="checkbox">
+				<span class="checkmark"></span>
+			</label>
+			<label class="container">Main
+				<input type="checkbox">
+				<span class="checkmark"></span>
+			</label>
+		</div>
+
+		<div id="SHP" class="tabContent">
+			<label>
+				<br />
+				<input type = "radio" name = "parking" value = "0" /> Away Mode
+				<br />
+			</label>
+		</div>
+
+		<div id="SHH" class="tabContent">
+		  <h1>SHH</h1>
+		  <p>SHH Module.</p>
+		</div>
+
+		<button class="tabLink" onclick="openCity('SHS', this, '#8B0000')" id="defaultOpen">SHS</button>
+		<button class="tabLink" onclick="openCity('SHC', this, '#8B0000')">SHC</button>
+		<button class="tabLink" onclick="openCity('SHP', this, '#8B0000')">SHP</button>
+		<button class="tabLink" onclick="openCity('SHH', this, '#8B0000')">SHH</button>
+
+
+		<br /><br />
+		<table>
+			<tr>
+				<th style="border: 1px solid rgb(190, 190, 190); padding: 10px; width:90%;"> House Layout</th>
+				<th style="border: 1px solid rgb(190, 190, 190); padding: 10px; width:100%;"> Simulation </th>	
+			</tr>
+			<tr>
+				<td>
+					<div id="jsonOutput"> </div>
+					<svg id="rect" width="600" height="450" viewBox="-4 12 250 150"  xmlns="http://www.w3.org/2000/svg"></svg>
+					<br/>
+					<!-- Buttons when clicked will call a function -->
+					<button onclick = "openLight()">Open Light</button>
+					<button onclick = "closeLight()">Close Light</button>
+					<br />
+					<button onclick = "openWindow()">Open Window</button>
+					<button onclick = "closeWindow()">Close Window</button>
+					<button onclick = "obstructWindow()">Ostruct Window</button>
+					<button onclick = "unobstructWindow()">Unobsctruct Window</button>
+					<br />
+					<button onclick = "openFan()">Open Fan</button>
+					<button onclick = "closeFan()">Close Fan</button>
+					<br />
+					<button onclick = "moveUser()">Move User</button>
+					<button onclick = "removeUser()">Remove User</button>
+				</td>
+				<td style="vertical-align:top; text-align:center;">
+					<p> This is a test </p>
+				</td>
+			</tr>
+			<tr style="width:100%">
+				<th style="border: 1px solid rgb(190, 190, 190); padding: 10px;"> Output cosole </th>
+			</tr>
+			<tr>
+				<td>
+					<p> This is a test </p>
+				</td>
+			</tr>
+		</table>
+		<br />
+
+		<!-- Windows icon for the required rooms -->
+		<img src="Image/window_Closed.png" class="window kitchen" id="kitchenWindow1"/>
+		<img src="Image/window_Closed.png" class="window kitchen" id="kitchenWindow2"/>
+		<img src="Image/window_Closed.png" class="window kitchen" id="kitchenWindow3"/>
+		<img src="Image/window_Closed.png" class="window kitchen" id="kitchenWindow4"/>
+		<img src="Image/window_Closed.png" class="window master" id="masterWindow1"/>
+		<img src="Image/window_Closed.png" class="window master" id="masterWindow2"/>
+		<img src="Image/window_Closed.png" class="window master" id="masterWindow3"/>
+		<img src="Image/window_Closed.png" class="window laundry" id="laundryWindow1"/>
+		<img src="Image/window_Closed.png" class="window bedroom1" id="bedroom1Window1"/>
+		<img src="Image/window_Closed.png" class="window bedroom1" id="bedroom1Window2"/>
+		<img src="Image/window_Closed.png" class="window bedroom2" id="bedroom2Window1"/>
+		<img src="Image/window_Closed.png" class="window bedroom2" id="bedroom2Window2"/>
+		<img src="Image/window_Closed.png" class="window livingRoom" id="livingRoomWindow1"/>
+		<img src="Image/window_Closed.png" class="window livingRoom" id="livingRoomWindow2"/>
+		<img src="Image/window_Closed.png" class="window livingRoom" id="livingRoomWindow3"/>
+		<img src="Image/window_Closed.png" class="window garage" id="garageWindow1"/>
+		<img src="Image/window_Closed.png" class="window garage" id="garageWindow2"/>
+		<img src="Image/window_Closed.png" class="window garage" id="garageWindow3"/>
+		<img src="Image/window_Closed.png" class="window garage" id="garageWindow4"/>
+		
+		<script>
+			var lightArr =[];
+			var fanArr=[];
+			var userArr=[];
+			var lightIcon = document.createElementNS(svg,"image");
+			var fanIcon = document.createElementNS(svg,"image");
+			var userIcon = document.createElementNS(svg,"image");
+
+			function houseLayout(arr) {
+				var output = "";
+				var index;
+				var nameOfRoom;
+				var numberOfWindows;
+				var numberOfLights;
+				var xCoordinate;
+				var yCoordinate;
+
+				for(index = 0; index<arr.length; index++){
+					nameOfRoom = arr[index].name;
+					numberOfWindows = arr[index].windows;
+					numberOfLights = arr[index].lights;
+					connectedTo = arr[index].doorsTo;
+					xCoordinate = arr[index].x;
+					yCoordinate = arr[index].y;
+					createRectangle(nameOfRoom, xCoordinate, yCoordinate, index, numberOfLights, numberOfWindows);
+					output += "Name of room: " + nameOfRoom + "<br>" + "Number of windows: " + numberOfWindows + "<br>" +
+					"Number of lights: " + numberOfLights + "<br>Connected to: " + arr[index].doorsTo + "<br>" +
+					"x coordinate: " + arr[index].x + "<br>y coordinate: " + arr[index].y + "<br><br>";
+				}
+
+			}
+
+			function createRectangle(nameOfRoom, xCoordinate, yCoordinate, index, numberOfLights, numberOfWindows){
+				var height;
+				var width;
+				var lineX1;
+				var lineX2;
+				var lineY1;
+				var lineY2;
+
+				switch(nameOfRoom){
+					case "Kitchen": {
+						height=60;
+						width=90;
+						break;
+					}
+					case "Hallway": {
+						height=25;
+						width=170;
+						lineX1=xCoordinate+width;
+						lineX2=lineX1;
+						lineY1=(yCoordinate+(height/2))-5;
+						lineY2=lineY1+10;
+						break;
+					}
+					case "Master": {
+						height=60;
+						width=60;
+						break;
+					}
+					case "Bathroom": {
+						height=40;
+						width=25;
+						break;
+					}
+					case "Laundry": {
+						height=40;
+						width=25;
+						break;
+					}
+					case "Bedroom_1":
+					case "Bedroom_2": {
+						height=40;
+						width=60;
+						break;
+					}
+					case "Living_Room": {
+						height=60;
+						width=70;
+						break;
+					}
+					case "Deck": {
+						height=65;
+						width=50;
+						lineX1=xCoordinate+width;
+						lineX2=lineX1;
+						lineY1=(yCoordinate+12.5)-5;
+						lineY2=lineY1+10;
+						break;
+					}
+					case "Garage": {
+						height=50;
+						width=60;
+						lineX1=xCoordinate+width;
+						lineX2=lineX1;
+						lineY1=(yCoordinate+(height/2))-10;
+						lineY2=lineY1+20;
+						break;
+					}
+
+				}
+				var centerX = (xCoordinate+(width/2)-nameOfRoom.length-2);
+				var centerY = (yCoordinate+(height/2));
+				var element = document.getElementById("rect");
+				var svg = "http://www.w3.org/2000/svg";
+				var rectNew = document.createElementNS(svg,"rect");
+				var textNew = document.createElementNS(svg,"text");
+				var lineNew = document.createElementNS(svg,"line");
+
+				lightIcon = document.createElementNS(svg,"image");
+				fanIcon = document.createElementNS(svg,"image");
+				userIcon = document.createElementNS(svg,"image");
+
+				rectNew.setAttribute("x", xCoordinate);
+				rectNew.setAttribute("y", yCoordinate);
+				rectNew.setAttribute("height", height);
+				rectNew.setAttribute("width", width);
+				rectNew.setAttribute("fill", "none");
+				rectNew.setAttribute("stroke", "black");
+
+				textNew.setAttribute("x", centerX);
+				textNew.setAttribute("y", centerY);
+				textNew.setAttribute("fill", "Black");
+				textNew.setAttribute("font-size", "5");
+				textNew.textContent = nameOfRoom;
+
+				//Set the light icons except for the deck
+				lightIcon.setAttribute("x",xCoordinate +1);
+				lightIcon.setAttribute("y", yCoordinate +1);
+				lightIcon.setAttribute("height",10);
+				lightIcon.setAttribute("width", 10);
+				lightArr.push(lightIcon);
+				if(nameOfRoom!="Deck"){
+					lightIcon.setAttribute("href", "image/Light_Disabled.png");
+				}
+
+				//Set the fan icons except for the deck
+				fanIcon.setAttribute("x",xCoordinate + width - 11);
+				fanIcon.setAttribute("y", yCoordinate + 2);
+				fanIcon.setAttribute("height", 9);
+				fanIcon.setAttribute("width", 9);
+				fanArr.push(fanIcon);
+				if(nameOfRoom!="Deck"){
+				fanIcon.setAttribute("href", "image/fan_Disabled.png");
+				}
+
+				//Set the user icon
+				userIcon.setAttribute("x",centerX + 2);
+				userIcon.setAttribute("y", centerY + 1);
+				userIcon.setAttribute("height", 9);
+				userIcon.setAttribute("width", 9);
+				userArr.push(userIcon);
+
+				lineNew.setAttribute("stroke", "white");
+				lineNew.setAttribute("x1", lineX1);
+				lineNew.setAttribute("x2", lineX2);
+				lineNew.setAttribute("y1", lineY1);
+				lineNew.setAttribute("y2", lineY2);
+
+				element.appendChild(rectNew);
+				element.appendChild(textNew);
+				element.appendChild(lineNew);
+				element.appendChild(lightIcon);
+				element.appendChild(fanIcon);
+				element.appendChild(userIcon);
+
+			}
+
+			//Ask the user which room they want and return an integer depending on their answer
+			function roomSelection(){
+				var room=prompt("Enter room (e.g. Kitchen): ");
+				switch(room){
+					case "Kitchen":
+						return 0;
+					case "Hallway":
+						return 1;
+					case "Master":
+						return 2;
+					case "Bathroom":
+						return 3;
+					case "Laundry":
+						return 4;
+					case "Bedroom_1":
+						return 5;
+					case "Bedroom_2":
+						return 6;
+					case "Living_Room":
+						return 7;
+					case "Deck":
+						return 8;
+					case "Garage":
+						return 9;
+					case "All":
+						return -1;
+				}
+			}
+
+			//Ask the user which window they want and return a string depending on their answer
+			function windowSelection(){
+				var room=prompt("Enter room name followed by window number (e.g. Kitchen 1): ");
+				switch(room){
+					case "Kitchen 1":
+						return "#kitchenWindow1";
+					case "Kitchen 2":
+						return "#kitchenWindow2";
+					case "Kitchen 3":
+						return "#kitchenWindow3";
+					case "Kitchen 4":
+						return "#kitchenWindow4";
+					case "Master 1":
+						return "#masterWindow1";
+					case "Master 2":
+						return "#masterWindow2";
+					case "Master 3":
+						return "#masterWindow3";
+					case "Laundry 1":
+						return "#laundryWindow1";
+					case "Bedroom_1 1":
+						return "#bedroom1Window1";
+					case "Bedroom_1 2":
+						return "#bedroom1Window2";
+					case "Bedroom_2 1":
+						return "#bedroom2Window1";
+					case "Bedroom_2 2":
+						return "#bedroom2Window2";
+					case "Living_Room 1":
+						return "#livingRoomWindow1";
+					case "Living_Room 2":
+						return "#livingRoomWindow2";
+					case "Living_Room 3":
+						return "#livingRoomWindow3";
+					case "Garage 1":
+						return "#garageWindow1";
+					case "Garage 2":
+						return "#garageWindow2";
+					case "Garage 3":
+						return "#garageWindow3";
+					case "Garage 4":
+						return "#garageWindow4";
+					case "All":
+						return -1;
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function openLight(){
+				var roomNumber = roomSelection();
+				if(roomNumber!=-1 && roomNumber!=8){
+					lightArr[roomNumber].setAttribute("href","image/Light_Open.png");
+				} else if (roomNumber==-1){
+					for(var i = 0; i< lightArr.length ; i++){
+						if(i!=8)
+							lightArr[i].setAttribute("href","image/Light_Open.png");
+					}
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function closeLight(){
+				var roomNumber = roomSelection();
+				if(roomNumber!=-1 && roomNumber!=8){
+					lightArr[roomNumber].setAttribute("href","image/Light_Closed.png");
+				} else if (roomNumber==-1){
+					for(var i = 0; i< lightArr.length ; i++){
+						if(i!=8)
+							lightArr[i].setAttribute("href","image/Light_Closed.png");
+					}
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function openFan(){
+				var roomNumber = roomSelection();
+				if(roomNumber!=-1 && roomNumber!=8){
+					fanArr[roomNumber].setAttribute("href","image/fan_Open.png");
+				} else if (roomNumber==-1){
+					for(var i = 0; i< fanArr.length ; i++){
+						if(i!=8)
+							fanArr[i].setAttribute("href","image/fan_Open.png");
+					}
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function closeFan(){
+				var roomNumber = roomSelection();
+				if(roomNumber!=-1 && roomNumber!=8){
+					fanArr[roomNumber].setAttribute("href","image/fan_Closed.png");
+				} else if (roomNumber==-1){
+					for(var i = 0; i< fanArr.length ; i++){
+						if(i!=8)
+							fanArr[i].setAttribute("href","image/fan_Closed.png");
+					}
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function moveUser(){
+				var roomNumber = roomSelection();
+				if(roomNumber!=-1){
+					userArr[roomNumber].setAttribute("href","image/user_Present.png");
+				} else if (roomNumber == 1){
+					for(var i = 0; i< lightArr.length; i++)
+						userArr[i].setAttribute("href","image/fan_Present.png");
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function removeUser(){
+				var roomNumber = roomSelection();
+				if(roomNumber!=-1){
+					userArr[roomNumber].setAttribute("href","");
+				} else{
+					for(var i = 0; i< lightArr.length; i++)
+						userArr[i].setAttribute("href","");
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function openWindow() {
+				var selection = windowSelection();
+				if(selection != -1){
+				document.querySelector(selection).setAttribute("src","image/window_Open.png");
+				} else {
+				for(var i = 0; i<19; i++)
+					document.querySelectorAll("img")[i].setAttribute("src","image/window_Open.png");
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function closeWindow() {
+				var selection = windowSelection();
+				if(selection != -1){
+					document.querySelector(selection).setAttribute("src","image/window_Closed.png");
+				} else {
+				for(var i = 0; i<19; i++)
+					document.querySelectorAll("img")[i].setAttribute("src","image/window_Closed.png");
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function obstructWindow() {
+				var selection = windowSelection();
+				if(selection != -1){
+					document.querySelector(selection).setAttribute("src","image/window_Obstructed.png");
+				} else {
+				for(var i = 0; i<19; i++)
+					document.querySelectorAll("img")[i].setAttribute("src","image/window_Obstructed.png");
+				}
+			}
+
+			//Will call a function and depending on the returned value from that
+			//It will update the corresponding image
+			function unobstructWindow() {
+				var selection = windowSelection();
+				if(selection != -1){
+					document.querySelector(selection).setAttribute("src","image/window_Open.png");
+				} else {
+				for(var i = 0; i<19; i++)
+					document.querySelectorAll("img")[i].setAttribute("src","image/window_Open.png");
+				}
+			}
+
+
+
+
+
+
+			//Tabs function
+			function openCity(cityName,elmnt,color) {
+				var i, tabContent, tabLinks;
+				tabContent = document.getElementsByClassName("tabContent");
+				for (i = 0; i < tabContent.length; i++) {
+					tabContent[i].style.display = "none";
+				}
+				tabLinks = document.getElementsByClassName("tabLink");
+				for (i = 0; i < tabLinks.length; i++) {
+					tabLinks[i].style.backgroundColor = "";
+				}
+				document.getElementById(cityName).style.display = "block";
+				elmnt.style.backgroundColor = color;
+			}
+			// Get the element with id="defaultOpen" and click on it
+			document.getElementById("defaultOpen").click();
+				
+				
+				
+			//Option tag's on the SHC tab's function
+			var x, i, j, l, ll, selElmnt, a, b, c;
+			/*look for any elements with the class "customSelect":*/
+			x = document.getElementsByClassName("customSelect");
+			l = x.length;
+			for (i = 0; i < l; i++) {
+				selElmnt = x[i].getElementsByTagName("select")[0];
+				ll = selElmnt.length;
+				/*for each element, create a new DIV that will act as the selected item:*/
+				a = document.createElement("DIV");
+				a.setAttribute("class", "selectSelected");
+				a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+				x[i].appendChild(a);
+				/*for each element, create a new DIV that will contain the option list:*/
+				b = document.createElement("DIV");
+				b.setAttribute("class", "select-items select-hide");
+				for (j = 1; j < ll; j++) {
+					/*for each option in the original select element,
+					create a new DIV that will act as an option item:*/
+					c = document.createElement("DIV");
+					c.innerHTML = selElmnt.options[j].innerHTML;
+					c.addEventListener("click", function(e) {
+						/*when an item is clicked, update the original select box, and the selected item:*/
+						var y, i, k, s, h, sl, yl;
+						s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+						sl = s.length;
+						h = this.parentNode.previousSibling;
+						for (i = 0; i < sl; i++) {
+							if (s.options[i].innerHTML == this.innerHTML) {
+								s.selectedIndex = i;
+								h.innerHTML = this.innerHTML;
+								y = this.parentNode.getElementsByClassName("same-as-selected");
+								yl = y.length;
+								for (k = 0; k < yl; k++) {
+									y[k].removeAttribute("class");
+								}
+								this.setAttribute("class", "same-as-selected");
+								break;
+							}
+						}
+						h.click();
+					});
+					b.appendChild(c);
+				}
+				x[i].appendChild(b);
+				a.addEventListener("click", function(e) {
+					/*when the select box is clicked, close any other select boxes, and open/close the current select box:*/
+					e.stopPropagation();
+					closeAllSelect(this);
+					this.nextSibling.classList.toggle("select-hide");
+					this.classList.toggle("select-arrow-active");
+				});
+			}
+			function closeAllSelect(elmnt) {
+				/*a function that will close all select boxes in the document, except the current select box:*/
+				var x, y, i, xl, yl, arrNo = [];
+				x = document.getElementsByClassName("select-items");
+				y = document.getElementsByClassName("select-selected");
+				xl = x.length;
+				yl = y.length;
+				for (i = 0; i < yl; i++) {
+					if (elmnt == y[i]) {
+					  arrNo.push(i)
+					} 
+					else {
+					  y[i].classList.remove("select-arrow-active");
+					}
+				}
+				for (i = 0; i < xl; i++) {
+					if (arrNo.indexOf(i)) {
+					  x[i].classList.add("select-hide");
+					}
+				}
+			}
+			
+			/*if the user clicks anywhere outside the select box, then close all select boxes:*/
+			document.addEventListener("click", closeAllSelect);
+		</script>
+	
+		<script src = "houseLayoutJSON.js"></script>
+	</body>
+</html>

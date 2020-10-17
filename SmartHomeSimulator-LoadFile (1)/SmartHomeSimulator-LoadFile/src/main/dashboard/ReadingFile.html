@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<body>
+	<div id="jsonOutput"></div>	
+	<svg width="12cm" height="12cm" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+		<div id="rect"></div>
+		<rect id="rectangle" x="100" y="260" width="30" height="40" stroke="black" fill="none"/>
+    </svg>	
+	<script>
+	function houseLayout(arr) {
+		var output = "";
+		var index;
+		var nameOfRoom;
+		var numberOfWindows;
+		var numberOfLights;
+		var xCoordinate;
+		var yCoordinate;
+		
+		var rooms = [];
+		for(index = 0; index<arr.length; index++){
+			nameOfRoom = arr[index].name;
+			numberOfWindows = arr[index].windows;
+			numberOfLights = arr[index].lights;
+			connectedTo = arr[index].doorsTo;
+			xCoordinate = arr[index].x;
+			yCoordinate = arr[index].y;
+			//document.getElementById("jsonOutput").innerHTML = nameOfRoom;
+			switch(nameOfRoom){
+				case "Hallway": {
+					var height="50";
+					var width="180";
+				}
+				case "Kitchen": {
+					var height="50";
+					var width="180";
+				}
+			}
+			var x = xCoordinate;
+			var y = yCoordinate;
+			document.getElementById("rectangle").setAttribute("x", x);
+			document.getElementById("rectangle").setAttribute("y", y);
+			document.getElementById("rectangle").setAttribute("height", height);
+			document.getElementById("rectangle").setAttribute("width", width);
+			rooms.push(["[" + nameOfRoom, numberOfWindows, numberOfLights, connectedTo + "]"]);
+			output += "Name of room: " + nameOfRoom + "<br>" + "Number of windows: " + numberOfWindows + "<br>" +
+			"Number of lights: " + numberOfLights + "<br>Connected to: " + arr[index].doorsTo + "<br>" + 
+			"x coordinate: " + arr[index].x + "<br>y coordinate: " + arr[index].y + "<br><br>";
+		}
+		//document.getElementById("jsonOutput").innerHTML = output;
+		
+	}
+	</script>
+	<script src = "houseLayoutJSON.js"></script>
+	</body>
+</html>

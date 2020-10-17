@@ -1,0 +1,72 @@
+houseLayout([
+	{
+		"name": "Kitchen",
+		"x":20,
+		"y":0,
+		"windows": 4,
+		"lights": 5,
+	},
+	{
+		"name": "Hallway",
+		"x":50,
+		"y":60,
+		"windows": 1,
+		"lights": 2,
+	},
+	{
+		"name": "Master",
+		"x":110,
+		"y":0,
+		"windows": 3,
+		"lights": 2,
+	},
+	{
+		"name": "Bathroom",
+		"x":75,
+		"y":85,
+		"windows": 1,
+		"lights": 2,
+	},
+	{
+		"name": "Laundry",
+		"x":50,
+		"y":85,
+		"windows": 1,
+		"lights": 2,
+	},
+	{
+		"name": "Bedroom_1",
+		"x":100,
+		"y":85,
+		"windows": 3,
+		"lights": 1,
+	},
+	{
+		"name": "Bedroom_2",
+		"x":160,
+		"y":85,
+		"windows": 2,
+		"lights": 1,
+	},
+	{
+		"name": "Living_Room",
+		"x":170,
+		"y":0,
+		"windows": 3,
+		"lights": 2,
+	},
+	{
+		"name": "Deck",
+		"x":0,
+		"y":60,
+		"windows": 0,
+		"lights": 0,
+	},
+	{
+		"name": "Garage",
+		"x":75,
+		"y":125,
+		"windows": 4,
+		"lights": 4,
+	}
+])
